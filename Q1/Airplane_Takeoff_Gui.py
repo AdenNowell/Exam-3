@@ -201,14 +201,17 @@ class TakeoffDistanceView:
         self.root.title("Airplane Takeoff Distance")
         self.root.geometry("900x650")
 
-        self.weight_entry = ttk.Entry(self.root, width=18)
-        self.thrust_entry = ttk.Entry(self.root, width=18)
-        self.calculate_button = ttk.Button(self.root, text="Calculate")
+        self.input_frame = ttk.Frame(self.root, padding=12)
+        self.graph_frame = ttk.Frame(self.root, padding=(12, 0, 12, 12))
+
+        self.weight_entry = ttk.Entry(self.input_frame, width=18)
+        self.thrust_entry = ttk.Entry(self.input_frame, width=18)
+        self.calculate_button = ttk.Button(self.input_frame, text="Calculate")
         self.output_label = ttk.Label(self.root, text="")
 
         self.figure = Figure(figsize=(7, 4.8), dpi=100)
         self.axes = self.figure.add_subplot(111)
-        self.canvas = FigureCanvasTkAgg(self.figure, master=self.root)
+        self.canvas = FigureCanvasTkAgg(self.figure, master=self.graph_frame)
 
         self.create_layout()
 
@@ -223,22 +226,24 @@ class TakeoffDistanceView:
         Returns:
             None.
         """
-        input_frame = ttk.Frame(self.root, padding=12)
-        input_frame.pack(fill=tk.X)
+        self.input_frame.pack(fill=tk.X)
+        self.input_frame.columnconfigure(1, weight=1)
+        self.input_frame.columnconfigure(3, weight=1)
 
-        ttk.Label(input_frame, text="Weight (lb):").grid(
+        ttk.Label(self.input_frame, text="Weight (lb):").grid(
             row=0, column=0, padx=6, pady=6, sticky=tk.W
         )
         self.weight_entry.grid(row=0, column=1, padx=6, pady=6)
 
-        ttk.Label(input_frame, text="Thrust (lb):").grid(
+        ttk.Label(self.input_frame, text="Thrust (lb):").grid(
             row=0, column=2, padx=6, pady=6, sticky=tk.W
         )
         self.thrust_entry.grid(row=0, column=3, padx=6, pady=6)
 
         self.calculate_button.grid(row=0, column=4, padx=10, pady=6)
         self.output_label.pack(fill=tk.X, padx=18, pady=(0, 8))
-        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, padx=12, pady=12)
+        self.graph_frame.pack(fill=tk.BOTH, expand=True)
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
     # Chat GPT helped me write this function.
     def set_default_inputs(self, weight, thrust):
